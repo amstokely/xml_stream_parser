@@ -21,17 +21,17 @@ namespace xml_stream_parser {
 
         explicit PugiXmlAdapter(pugi::xml_node n) : node(n) {}
 
-        std::string get_attribute(std::string_view key) const {
+        [[nodiscard]] std::string get_attribute(std::string_view key) const {
             if (auto a = node.attribute(std::string(key).c_str()))
                 return a.value();
             return {};
         }
 
-        bool has_attribute(std::string_view key) const {
+        [[nodiscard]] bool has_attribute(std::string_view key) const {
             return node.attribute(std::string(key).c_str());
         }
 
-        std::vector<PugiXmlAdapter> children(std::string_view tag) const {
+        [[nodiscard]] std::vector<PugiXmlAdapter> children(std::string_view tag) const {
             std::vector<PugiXmlAdapter> out;
             for (auto c : node.children(std::string(tag).c_str()))
                 out.emplace_back(c);

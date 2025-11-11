@@ -1,6 +1,7 @@
 #include <ut.hpp>
 #include "xml_stream_parser.hpp"
 #include "mock_xml_file_system.hpp"
+#include "stream.hpp"
 
 using namespace boost::ut;
 using namespace xml_stream_parser;
@@ -449,6 +450,15 @@ void test_existing_keys_are_overwritten() {
     };
 }
 
+void test_load_stream_from_xml() {
+    auto doc = make_stream_fixture();
+    Stream stream;
+    stream.load_from_xml(doc.child("immutable_stream"), doc);
+    expect(stream.get_stream_id() == "s1");
+    expect(stream.get_itype() == 4_i);
+    expect(stream.get_record_interval() == "none");
+}
+
 int main() {
     test_build_stream_path();
     test_compute_clobber_mode();
@@ -467,4 +477,5 @@ int main() {
     test_parse_multiple_attributes();
     test_empty_node_produces_empty_map();
     test_existing_keys_are_overwritten();
+    test_load_stream_from_xml();
 }

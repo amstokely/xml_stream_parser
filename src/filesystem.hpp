@@ -31,10 +31,10 @@ namespace xml_stream_parser {
 
         [[nodiscard]] bool can_write(const std::string &path) const override {
             std::error_code ec;
-            auto st = fs::status(path, ec);
+            const auto st = fs::status(path, ec);
             if (ec) return false;
 
-            auto perms = st.permissions();
+            const auto perms = st.permissions();
             return (perms & (fs::perms::owner_write |
                              fs::perms::group_write |
                              fs::perms::others_write)) != fs::perms::none;

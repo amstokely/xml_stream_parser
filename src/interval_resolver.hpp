@@ -42,10 +42,10 @@ Node resolve_target_stream(const Node &root, std::string_view name) {
     throw StreamIntervalError("Referenced stream not found");
 }
 
-inline void ensure_not_recursive(std::string_view streamID,
-                                 std::string_view interval_type,
-                                 std::string_view target_stream,
-                                 std::string_view target_attr) {
+inline void ensure_not_recursive(const std::string_view streamID,
+                                 const std::string_view interval_type,
+                                 const std::string_view target_stream,
+                                 const std::string_view target_attr) {
     if (target_stream == streamID && target_attr == interval_type)
         throw StreamIntervalError("Self-referencing interval");
 }
@@ -58,8 +58,8 @@ inline void ensure_resolved_value_is_final(const std::string &resolved) {
 template<XmlNode Node>
 std::string extract_stream_interval_impl(
     std::string_view interval,
-    std::string_view interval_type,
-    std::string_view streamID,
+    const std::string_view interval_type,
+    const std::string_view streamID,
     const Node &streams_root)
 {
     using namespace std::string_view_literals;

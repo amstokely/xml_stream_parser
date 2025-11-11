@@ -6,6 +6,7 @@
 #include "xml_node.hpp"
 #include "interval_resolver.hpp"
 #include "parse.hpp"
+#include "stream.hpp"
 
 
 #endif // XML_STREAM_PARSER_XML_STREAM_PARSER_HPP
