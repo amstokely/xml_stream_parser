@@ -1,0 +1,3 @@
+add_executable(test_xml_stream_parser xml_stream_parser.test.cpp)
+target_link_libraries(test_xml_stream_parser PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_xml_stream_parser COMMAND test_xml_stream_parser)
