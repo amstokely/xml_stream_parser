@@ -1,3 +1,31 @@
-add_executable(test_xml_stream_parser xml_stream_parser.test.cpp)
-target_link_libraries(test_xml_stream_parser PRIVATE xml_stream_parser pugixml::pugixml)
-add_test(NAME test_xml_stream_parser COMMAND test_xml_stream_parser)
+add_executable(test_filename_interval parse_filename_interval.test.cpp)
+target_link_libraries(test_filename_interval PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_filename_interval COMMAND test_filename_interval)
+
+add_executable(test_build_stream_path build_stream_path.test.cpp)
+target_link_libraries(test_build_stream_path PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_build_stream_path COMMAND test_build_stream_path)
+
+add_executable(test_parse_clobber_mode parse_clobber_mode.test.cpp)
+target_link_libraries(test_parse_clobber_mode PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_parse_clobber_mode COMMAND test_parse_clobber_mode)
+
+add_executable(test_parse_direction parse_direction.test.cpp)
+target_link_libraries(test_parse_direction PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_parse_direction COMMAND test_parse_direction)
+
+add_executable(test_handle_output_stream_path handle_output_stream_path.test.cpp)
+target_link_libraries(test_handle_output_stream_path PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_handle_output_stream_path COMMAND test_handle_output_stream_path)
+
+add_executable(test_parse_precision_bytes parse_precision_bytes.test.cpp)
+target_link_libraries(test_parse_precision_bytes PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_parse_precision_bytes COMMAND test_parse_precision_bytes)
+
+add_executable(test_parse_io_type parse_io_type.test.cpp)
+target_link_libraries(test_parse_io_type PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_parse_io_type COMMAND test_parse_io_type)
+
+add_executable(test_parse_reference_time parse_reference_time.test.cpp)
+target_link_libraries(test_parse_reference_time PRIVATE xml_stream_parser pugixml::pugixml)
+add_test(NAME test_parse_reference_time COMMAND test_parse_reference_time)

@@ -202,8 +202,7 @@ namespace xml_stream_parser {
 
     inline void handle_stream_output_path(
         IXmlFileSystem &fs,
-        int type,
-        const std::string & /*streamID, unused but preserved*/,
+        const int type,
         const std::string &filename_template
     ) {
         // Output-only (2) or input+output (3)
