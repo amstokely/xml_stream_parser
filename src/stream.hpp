@@ -15,16 +15,40 @@ namespace xml_stream_parser {
         int m_iprec{};
         int m_iclobber{};
         int m_i_iotype{};
+
     public:
         Stream() = default;
-        void load_from_xml(const pugi::xml_node &stream_xml, const pugi::xml_node &streams_root) {
+
+        void load_from_xml(const pugi::xml_node &stream_xml,
+                           const pugi::xml_node &streams_root) {
             std::unordered_map<std::string, std::string> fields;
             parse_fields(stream_xml, fields);
             m_stream_id = fields.at("name");
             m_itype = parse_direction(fields["type"]);
-            m_reference_time = parse_reference_time(fields["reference_time"]);
-            m_record_interval = parse_record_interval(fields["record_interval"]);
+            m_reference_time = parse_reference_time(
+                fields["reference_time"]);
+            m_record_interval = parse_record_interval(
+                fields["record_interval"]);
             m_iprec = parse_precision_bytes(fields["precision"]);
+            auto interval_in_resolved = parse_interval(
+                fields["input_interval"],
+                "input_interval", m_stream_id,
+                streams_root);
+            auto interval_out_resolved = parse_interval(
+                fields["output_interval"],
+                "output_interval", m_stream_id,
+                streams_root);
+            m_filename_interval = parse_filename_interval(
+                fields["type"], fields["input_interval"],
+                fields["output_interval"],
+                interval_in_resolved, interval_out_resolved,
+                fields["filename_interval"]
+                );
+
+            m_i_iotype = parse_io_type(fields["io_type"]);
+            m_filename_template = fields["filename_template"];
+            m_immutable = stream_xml.name() == std::string("immutable_stream") ? 1 : 0;
+            m_iclobber = parse_clobber_mode(fields["clobber_mode"]);
         }
 
         [[nodiscard]] const std::string &get_stream_id() const {
