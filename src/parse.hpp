@@ -11,9 +11,6 @@
 #include "interval_resolver.hpp"
 
 namespace xml_stream_parser {
-    // -----------------------------------------------------------------------------
-    // Public API: Stream interval access
-    // -----------------------------------------------------------------------------
 
     inline std::string extract_stream_interval(
         const std::string &interval,

@@ -1,5 +1,4 @@
 #include <ut.hpp>
-#include "xml_stream_parser.hpp"
 #include "mock_xml_file_system.hpp"
 #include "stream.hpp"
 
@@ -20,14 +19,12 @@ void test_build_stream_path() {
     "build_stream_path"_test = [] {
         MockFileSystem fs;
 
-        // Case 1: directory exists and is writable → success
         fs.exists_ret = true;
         fs.writable = true;
         expect(nothrow([&] {
             build_stream_path(fs, "/data/history/file.nc");
         }));
 
-        // Case 2: directory does not exist but can be created → success
         fs.exists_ret = false;
         fs.create_success = true;
         fs.writable = true;
@@ -35,7 +32,6 @@ void test_build_stream_path() {
             build_stream_path(fs, "/data/history/file.nc");
         }));
 
-        // Case 3: directory creation fails → throws
         fs.exists_ret = false;
         fs.create_success = false;
         fs.writable = true;
@@ -43,7 +39,6 @@ void test_build_stream_path() {
             build_stream_path(fs, "/data/history/file.nc");
         }));
 
-        // Case 4: directory exists but is not writable → throws
         fs.exists_ret = true;
         fs.create_success = true;
         fs.writable = false;
@@ -51,7 +46,6 @@ void test_build_stream_path() {
             build_stream_path(fs, "/data/history/file.nc");
         }));
 
-        // Case 5: filename has no directory component → nothing happens
         fs.exists_ret = false; // would normally trigger creation
         fs.create_success = false; // but should not be called
         fs.writable = false;
@@ -106,10 +100,7 @@ struct XmlClobberModeStreamParserFixture {
             "unrecognized_clobber_stream", streams_node),
             streams_node);
     }
-
-
 };
-
 void test_xml_parse_clobber_mode() {
     const XmlClobberModeStreamParserFixture fixture;
     expect(fixture.default_clobber_stream.get_iclobber()== 0_i);
@@ -157,7 +148,6 @@ struct XmlDirectionStreamParserFixture {
             streams_node);
     }
 };
-
 void test_xml_parse_direction_stream_parser() {
     "xml_direction_stream_parser"_test = [] {
         XmlDirectionStreamParserFixture fixture;
@@ -206,7 +196,6 @@ void test_handle_stream_output_path() {
     };
 }
 
-
 struct XmlParsePrecisionFixture {
     Stream single_precision_stream;
     Stream double_precision_stream;
@@ -242,7 +231,6 @@ struct XmlParsePrecisionFixture {
             precision_streams_node);
     }
 };
-
 void test_xml_parse_precision_bytes() {
     XmlParsePrecisionFixture fixture;
     expect(fixture.single_precision_stream.get_iprec() == 4_i);
@@ -292,7 +280,6 @@ struct XmlIoStreamParserFixture {
                                         io_streams_node);
     }
 };
-
 void test_xml_parse_io_type() {
     XmlIoStreamParserFixture fixture;
     expect(fixture.io_pnetcdf_cdf5_stream.get_i_iotype() == 1_i);
@@ -330,7 +317,6 @@ struct XmlRecordIntervalStreamParserFixture {
             record_interval_streams_node);
     }
 };
-
 void test_xml_parse_record_interval() {
     XmlRecordIntervalStreamParserFixture fixture;
     expect(fixture.record_interval_stream.get_record_interval() ==
@@ -376,6 +362,44 @@ void test_xml_parse_reference_time() {
         "initial_time");
 }
 
+struct XmlFilenameIntervalStreamParserFixture {
+    Stream s1, s2;
+
+
+    XmlFilenameIntervalStreamParserFixture() {
+        auto filename_interval_doc = pugi::xml_document{};
+        filename_interval_doc.load_string(R"(
+            <streams>
+                <immutable_stream name="s1" input_interval="3h" type="input"/>
+                <immutable_stream name="s2" input_interval="stream:s1:input_interval" type="input"/>
+            </streams>
+        )");
+        auto filename_interval_streams_node = filename_interval_doc.child(
+            "streams");
+        auto s1_xml =
+                get_xml_stream("s1",
+                               filename_interval_streams_node);
+        s1.load_from_xml(
+            s1_xml,
+            filename_interval_streams_node);
+        auto s2_xml =
+                get_xml_stream("s2",
+                               filename_interval_streams_node);
+        s2.load_from_xml(
+            s2_xml,
+            filename_interval_streams_node);
+
+    }
+};
+void test_xml_parse_filename_interval() {
+    XmlFilenameIntervalStreamParserFixture fixture;
+    expect(fixture.s1.get_filename_interval() ==
+           "3h");
+    expect (
+        fixture.s2.get_filename_interval() ==
+        "3h");
+}
+
 
 int main() {
     test_build_stream_path();
@@ -386,4 +410,5 @@ int main() {
     test_handle_stream_output_path();
     test_xml_parse_precision_bytes();
     test_xml_parse_reference_time();
+    test_xml_parse_filename_interval();
 }
