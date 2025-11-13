@@ -12,25 +12,12 @@
 
 namespace xml_stream_parser {
 
-    inline std::string extract_stream_interval(
+    template<XmlNode Node>
+    std::string parse_interval(
         const std::string &interval,
         const std::string &interval_type,
         const std::string &streamID,
-        const pugi::xml_node &streams_root
-    ) {
-        return extract_stream_interval_impl(
-            interval,
-            interval_type,
-            streamID,
-            PugiXmlAdapter{streams_root}
-        );
-    }
-
-    inline std::string parse_interval(
-        const std::string &interval,
-        const std::string &interval_type,
-        const std::string &streamID,
-        const pugi::xml_node &streams
+        const Node &streams
     ) {
         return interval.empty()
                    ? ""
@@ -42,31 +29,36 @@ namespace xml_stream_parser {
     // Field parsing
     // -----------------------------------------------------------------------------
 
+    template<XmlNode Node>
     inline void parse_fields(
-        const pugi::xml_node &stream_xml,
+        const Node &stream_xml,
         std::unordered_map<std::string, std::string> &fields
     ) {
         fields.clear();
-        for (auto attr: stream_xml.attributes()) {
-            fields.emplace(attr.name(), attr.value());
-        }
+        fields = stream_xml.get_attributes();
     }
 
     // -----------------------------------------------------------------------------
     // Filename interval resolution
     // -----------------------------------------------------------------------------
 
-    inline std::string parse_filename_interval(
+    template<XmlNode Node>
+    std::string parse_filename_interval(
         const std::string &direction,
         const std::string &interval_in,
         const std::string &interval_out,
-        const std::string &interval_in_resolved,
-        const std::string &interval_out_resolved,
-        const std::string &filename_interval
+        const std::string &filename_interval,
+        const std::string &streamID,
+        const Node &streams
+
     ) {
         using namespace std::string_view_literals;
 
         auto m = filename_interval;
+        const auto interval_in_resolved = parse_interval(
+            interval_in, "input_interval", streamID, streams);
+        const auto interval_out_resolved = parse_interval(
+            interval_out, "output_interval", streamID, streams);
 
         constexpr auto is_real_interval = [
                 ](std::string_view s) noexcept {
@@ -210,12 +202,12 @@ namespace xml_stream_parser {
 
     inline void handle_stream_output_path(
         IXmlFileSystem &fs,
-        int itype,
+        int type,
         const std::string & /*streamID, unused but preserved*/,
         const std::string &filename_template
     ) {
         // Output-only (2) or input+output (3)
-        if (itype == 2 || itype == 3) {
+        if (type == 2 || type == 3) {
             build_stream_path(fs, filename_template);
         }
     }

@@ -56,7 +56,7 @@ inline void ensure_resolved_value_is_final(const std::string &resolved) {
 }
 
 template<XmlNode Node>
-std::string extract_stream_interval_impl(
+std::string extract_stream_interval(
     std::string_view interval,
     const std::string_view interval_type,
     const std::string_view streamID,
