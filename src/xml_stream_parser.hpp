@@ -3,8 +3,7 @@
 #pragma once
 
 #include "filesystem.hpp"
-#include "xml_node.hpp"
-#include "interval_resolver.hpp"
+#include "pugi_xml_adapter.hpp"
 #include "parse.hpp"
 #include "stream.hpp"
 

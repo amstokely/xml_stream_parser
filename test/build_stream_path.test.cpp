@@ -5,6 +5,7 @@
 
 using namespace boost::ut;
 using namespace xml_stream_parser;
+using namespace xml_stream_parser::test;
 
 void test_build_stream_path() {
     using namespace boost::ut::bdd;
